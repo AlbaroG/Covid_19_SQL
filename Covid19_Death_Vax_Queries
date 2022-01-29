@@ -1,0 +1,74 @@
+
+SELECT 
+    *
+FROM
+    `covidproject-339521.CoVid_Data.CoVidDeaths` cdt
+JOIN 
+    `covidproject-339521.CoVid_Data.CoVidVax` cvt
+ON 
+    cdt.location = cvt.location and 
+    cdt.date = cvt.date
+
+--Total Population vs. Vax
+
+SELECT 
+    cdt.location,cdt.date,cdt.population,cdt.total_deaths,cvt.total_vaccinations
+FROM
+    `covidproject-339521.CoVid_Data.CoVidDeaths` cdt
+JOIN 
+    `covidproject-339521.CoVid_Data.CoVidVax` cvt
+ON 
+    cdt.location = cvt.location and 
+    cdt.date = cvt.date
+WHERE 
+    cdt.continent != "null"
+ORDER BY 
+    cdt.location, cdt.date
+
+-- Total Population vs Vaccinations
+-- Shows Percentage of Population that has recieved at least one Covid Vaccine
+
+Select 
+    cdt.continent, cdt.location, cdt.date, cdt.population, cvt.new_vaccinations, 
+    SUM(cvt.new_vaccinations) OVER (Partition by cdt.location Order by cdt.location, cdt.date) as RollingPeopleVaccinated
+--, (RollingPeopleVaccinated/population)*100
+FROM
+    `covidproject-339521.CoVid_Data.CoVidDeaths` cdt
+JOIN 
+    `covidproject-339521.CoVid_Data.CoVidVax` cvt
+ON 
+    cdt.location = cvt.location and 
+    cdt.date = cvt.date
+where cdt.continent is not null 
+order by 2,3
+
+-- Temp Table
+
+DROP Table if exists #PercentPopulationVaccinated
+Create Table #PercentPopulationVaccinated
+(
+Continent nvarchar(255),
+Location nvarchar(255),
+Date datetime,
+Population numeric,
+New_vaccinations numeric,
+RollingPeopleVaccinated numeric
+)
+
+Insert into #PercentPopulationVaccinated
+Select 
+    cdt.continent, cdt.location, cdt.date, cdt.population, cvt.new_vaccinations, 
+    SUM(cvt.new_vaccinations) OVER (Partition by cdt.location Order by cdt.location, cdt.date) as RollingPeopleVaccinated
+--, (RollingPeopleVaccinated/population)*100
+FROM
+    `covidproject-339521.CoVid_Data.CoVidDeaths` cdt
+JOIN 
+    `covidproject-339521.CoVid_Data.CoVidVax` cvt
+ON 
+    cdt.location = cvt.location and 
+    cdt.date = cvt.date
+--where cdt.continent is not null 
+--order by 2,3
+
+Select *, (RollingPeopleVaccinated/Population)*100
+From #PercentPopulationVaccinated
