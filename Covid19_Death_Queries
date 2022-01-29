@@ -1,0 +1,89 @@
+
+  -- Display the death rate OF Covid19 IN the USA BY date
+SELECT
+  location,
+  date,
+  total_deaths,
+  total_cases,
+  ROUND((total_deaths/total_cases)*100,2) AS DeathRate
+FROM
+  `covidproject-339521.CoVid_Data.CoVidDeaths`
+WHERE
+  location LIKE '%States%'
+ORDER BY
+  location,
+  date ---Total Cases vs. Population (USA)
+SELECT
+  location,
+  date,
+  total_cases,
+  population,
+  ROUND((total_cases/population)*100,2) AS ContactRate
+FROM
+  `covidproject-339521.CoVid_Data.CoVidDeaths`
+WHERE
+  location LIKE '%States%'
+ORDER BY
+  location,
+  date ---Total Cases vs. Population (Countries)
+SELECT
+  location,
+  date,
+  total_cases,
+  population,
+  ROUND((total_cases/population)*100,2) AS ContactRate
+FROM
+  `covidproject-339521.CoVid_Data.CoVidDeaths`
+ORDER BY
+  location,
+  date -- Max InfectionRate
+SELECT
+  location,
+  MAX(total_cases)AS MaxInfection,
+  population,
+  MAX(ROUND((total_cases/population)*100,2)) AS PopulationContactRate
+FROM
+  `covidproject-339521.CoVid_Data.CoVidDeaths`
+GROUP BY
+  location,
+  population
+ORDER BY
+  PopulationContactRate DESC -- Max DeathRate
+SELECT
+  location,
+  MAX(total_deaths)AS MaxDeath,
+  population,
+  MAX(ROUND((total_deaths/population)*100,2)) AS PopulationDeathRate
+FROM
+  `covidproject-339521.CoVid_Data.CoVidDeaths`
+GROUP BY
+  location,
+  population
+ORDER BY
+  PopulationDeathRate DESC -- Max Deaths
+SELECT
+  location,
+  MAX(total_deaths)AS MaxDeath,
+  population
+FROM
+  `covidproject-339521.CoVid_Data.CoVidDeaths`
+WHERE
+  continent != "null"
+GROUP BY
+  location,
+  population
+ORDER BY
+  MaxDeath DESC --Global --New_Cases vs New_Deaths
+SELECT
+  date,
+  SUM(new_deaths) Total_Death,
+  SUM(new_cases) Total_Cases,
+  ROUND(SUM(new_deaths)/SUM(new_cases)*100,2) GlobalDeathRate
+FROM
+  `covidproject-339521.CoVid_Data.CoVidDeaths`
+WHERE
+  continent != "null"
+GROUP BY
+  date
+ORDER BY
+  date
