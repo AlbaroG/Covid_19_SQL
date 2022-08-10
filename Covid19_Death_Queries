@@ -13,6 +13,8 @@ WHERE
 ORDER BY
   location,
   date ---Total Cases vs. Population (USA)
+
+
 SELECT
   location,
   date,
@@ -26,6 +28,8 @@ WHERE
 ORDER BY
   location,
   date ---Total Cases vs. Population (Countries)
+
+
 SELECT
   location,
   date,
@@ -37,6 +41,8 @@ FROM
 ORDER BY
   location,
   date -- Max InfectionRate
+
+
 SELECT
   location,
   MAX(total_cases)AS MaxInfection,
@@ -48,7 +54,9 @@ GROUP BY
   location,
   population
 ORDER BY
-  PopulationContactRate DESC -- Max DeathRate
+PopulationContactRate DESC -- Max DeathRate
+
+
 SELECT
   location,
   MAX(total_deaths)AS MaxDeath,
@@ -61,6 +69,7 @@ GROUP BY
   population
 ORDER BY
   PopulationDeathRate DESC -- Max Deaths
+
 SELECT
   location,
   MAX(total_deaths)AS MaxDeath,
@@ -73,7 +82,9 @@ GROUP BY
   location,
   population
 ORDER BY
-  MaxDeath DESC --Global --New_Cases vs New_Deaths
+MaxDeath DESC --Global --New_Cases vs New_Deaths
+
+
 SELECT
   date,
   SUM(new_deaths) Total_Death,
